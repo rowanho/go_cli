@@ -28,6 +28,7 @@ func YesNoPrompt(question string) bool {
   reader := bufio.NewReader(os.Stdin)
   fmt.Print(question)
   text, _ := reader.ReadString('\n')
+  text = text[:len(text)-1]
   for true {
     if StringInSlice(text, yesStrings) {
       return true

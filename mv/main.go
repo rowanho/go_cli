@@ -2,7 +2,6 @@ package main
 
 import (
   "github.com/rowanho/go_cli/utilsCli"
-
   "os"
   "flag"
   "fmt"
@@ -39,12 +38,13 @@ func directReplace(src string, dst string, prompt bool) (bool, error) {
   return true, nil
 }
 
-func Execute() {
-  src := os.Args[1]
-  dst := os.Args[2]
-
+func main() {
   iPtr := flag.Bool("i", false, "Prompts user when overwriting existing file")
   flag.Parse()
+  args := flag.Args()
+  src := args[0]
+  dst := args[1]
+
   prompt := *iPtr
   fmt.Println(prompt)
   written, err := directReplace(src, dst, prompt)
