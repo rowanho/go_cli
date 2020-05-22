@@ -1,8 +1,7 @@
 package main
 
 import (
-  "github.com/rowanho/go_cli/utilsCli"
-
+  "go_cli/utilsCli"
   "os"
   "flag"
   "fmt"
@@ -15,30 +14,38 @@ import (
 * Carries out the actual file replacement
 */
 
-func directReplace(src string, dst string, prompt bool) (bool, error) {
+func directReplace(src string, dst string, prompt bool, prevent bool, update bool) (bool, error) {
   fileInfo, _:= os.Stat(dst)
   if fileInfo.IsDir() {
     dst = filepath.Join(dst, filepath.Base(src))
   }
-  _, err := os.Stat(src)
-  if os.IsNotExist(err) {
-      return false, err
+  srcInfo, srcErr := os.Stat(src)
+  if srcErr != nil {
+      return false, srcErr
   }
 
   dstExist := false
-  _, err = os.Stat(src)
-  if !os.IsNotExist(err) {
+  dstInfo, dstErr := os.Stat(dst)
+  if dstErr == nil {
       dstExist = true
   }
 
-  if prompt && dstExist {
-    overwrite := utilsCli.YesNoPrompt(fmt.Sprintf("%s already exists, overwrite? y/n: ", dst))
-    if !overwrite {
-      return false, nil
+  if dstExist {
+    if prevent {
+        return false, nil
+    } else if prompt {
+        overwrite := utilsCli.YesNoPrompt(fmt.Sprintf("%s already exists, overwrite? y/n: ", dst))
+        if !overwrite {
+          return false, nil
+        }
+    } else if update {
+        if dstInfo.ModTime().After(srcInfo.ModTime()) {
+          return false, nil
+        }
     }
   }
 
-  err = os.Rename(src, dst)
+  err := os.Rename(src, dst)
   if err != nil {
     return false, err
   }
@@ -75,6 +82,9 @@ func getFileSet(srcPatterns []string)  (map[string]bool, error) {
 
 func main() {
   iPtr := flag.Bool("i", false, "Prompts user when overwriting existing file")
+  nPtr := flag.Bool("n", false, "Prevents overwrite of existing file")
+  uPtr := flag.Bool("u", false, "Updates when source is newer than destination")
+  vPtr := flag.Bool("v", false, "Verbose - output destination of each file")
   flag.Parse()
   args := flag.Args()
   if len(args) < 2 {
@@ -84,8 +94,6 @@ func main() {
   srcs := args[:len(args) -1]
   dst := args[len(args) - 1]
 
-  prompt := *iPtr
-  fmt.Println(prompt)
   fileSet, fileErr := getFileSet(srcs)
 
   if fileErr != nil {
@@ -102,12 +110,12 @@ func main() {
       return
   }
   for filePath := range fileSet {
-    written, err := directReplace(filePath, dst, prompt)
+    written, err := directReplace(filePath, dst, *iPtr, *nPtr, *uPtr)
     if err != nil {
         fmt.Println(err.Error())
-    } else if written {
+    } else if written && *vPtr {
         fmt.Printf("Moved %s to %s\n", filePath, dst)
-    } else {
+    } else if *vPtr {
         fmt.Println("Cancelled overwrite")
     }
   }
