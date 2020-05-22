@@ -116,7 +116,7 @@ func main() {
     } else if written && *vPtr {
         fmt.Printf("Moved %s to %s\n", filePath, dst)
     } else if *vPtr {
-        fmt.Println("Cancelled overwrite")
+        fmt.Printf("Cancelled move of %s to %s\n", filePath, dst)
     }
   }
 }
