@@ -33,13 +33,15 @@ func directReplace(src string, dst string, prompt bool, prevent bool, update boo
   if dstExist {
     if prevent {
         return false, nil
-    } else if prompt {
-        overwrite := utilsCli.YesNoPrompt(fmt.Sprintf("%s already exists, overwrite? y/n: ", dst))
-        if !overwrite {
-          return false, nil
-        }
     } else if update {
         if dstInfo.ModTime().After(srcInfo.ModTime()) {
+          return false, nil
+        }
+    }
+    
+    if prompt {
+        overwrite := utilsCli.YesNoPrompt(fmt.Sprintf("%s already exists, overwrite? y/n: ", dst))
+        if !overwrite {
           return false, nil
         }
     }
