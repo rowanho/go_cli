@@ -52,10 +52,17 @@ func main() {
     lines := strings.Split(stringContents, "\n")
     newLines := make([]string, 0)
     subsq := 0
-    for lineNo, line := range lines {
+    lineNo := 0
+    for _, line := range lines {
       app := false
+      empty := false
+      if strings.TrimSpace(line) == "" {
+        empty = true
+      } else {
+        lineNo += 1
+      }
       if *sPtr {
-        if strings.TrimSpace(line) == "" {
+        if empty {
             subsq += 1
         } else {
             subsq = 0
@@ -68,8 +75,8 @@ func main() {
       }
 
       if app {
-        if *bPtr {
-            newLines = append(newLines, fmt.Sprintf("%d  %s", lineNo + 1, line))
+        if *bPtr && !empty {
+            newLines = append(newLines, fmt.Sprintf("%d  %s", lineNo, line))
         } else {
             newLines = append(newLines, line)
         }
