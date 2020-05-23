@@ -34,7 +34,7 @@ func main() {
   EPtr := flag.Bool("E", false, "Display $ at the end of each line.")
   sPtr := flag.Bool("s", false, "Suppress repeated empty output lines.")
   TPtr := flag.Bool("T", false, "Display TAB characters as ^I.")
-  vPtr := flag.Bool("v", false, "Displays nonprinting characters, except for tabs and the end of line character")
+  vPtr := flag.Bool("v", false, "Displays nonprinting characters, except for tabs and the end of line character.")
   flag.Parse()
   args := flag.Args()
   if len(args) == 0 {
@@ -48,18 +48,31 @@ func main() {
     return
   }
   stringContents := string(fileContents)
-  if *sPtr {
+  if *sPtr || *bPtr {
     lines := strings.Split(stringContents, "\n")
     newLines := make([]string, 0)
     subsq := 0
-    for _, line := range lines {
-      if strings.TrimSpace(line) == "" {
-        subsq += 1
+    for lineNo, line := range lines {
+      app := false
+      if *sPtr {
+        if strings.TrimSpace(line) == "" {
+            subsq += 1
+        } else {
+            subsq = 0
+        }
+        if subsq < 2 {
+          app = true
+        }
       } else {
-        subsq = 0
+          app = true
       }
-      if subsq < 2 {
-        newLines = append(newLines, line)
+
+      if app {
+        if *bPtr {
+            newLines = append(newLines, fmt.Sprintf("%d  %s", lineNo + 1, line))
+        } else {
+            newLines = append(newLines, line)
+        }
       }
     }
     stringContents = strings.Join(newLines, "\n")
@@ -75,9 +88,6 @@ func main() {
     if int(byte(c)) == newline {
         if *EPtr {
           stringArr[i] += "$"
-        }
-        if *bPtr {
-          stringArr[i] += ("  " + string(i + 1))
         }
         stringArr[i] += "\n"
     } else if *TPtr && int(byte(c)) == tab {
