@@ -1,15 +1,17 @@
 package main
 
 import (
-  "flag"
-"fmt"
+	"flag"
+	"fmt"
 	"io/ioutil"
 	"strings"
 )
 
-var extraCaretOrder = []string{"^[", "^\\", "^]", "^^", "^_"}
-var newline = 10
-var tab = 9
+var (
+ 	extraCaretOrder = []string{"^[", "^\\", "^]", "^^", "^_"}
+	newline = 10
+	tab = 9
+)
 
 /*
 * Returns the caret notation of non-printable characters,
