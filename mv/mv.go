@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"go_cli/utilsCli"
+	"gocli/utils"
 	"io/ioutil"
 	"os"
 	"path/filepath"
