@@ -10,9 +10,7 @@ import (
 	"regexp"
 )
 
-/*
-* Carries out the actual file replacement
- */
+// Carries out the actual file replacement
 
 func directReplace(src string, dst string, prompt bool, prevent bool, update bool) (bool, error) {
 	fileInfo, _ := os.Stat(dst)
@@ -54,9 +52,7 @@ func directReplace(src string, dst string, prompt bool, prevent bool, update boo
 	return true, nil
 }
 
-/*
-* Walks through all matching patterns, moves file if it matches
- */
+// Walks through all matching patterns, moves file if it matches
 func getFileSet(srcPatterns []string) (map[string]bool, error) {
 	replaceFiles := make(map[string]bool)
 	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {

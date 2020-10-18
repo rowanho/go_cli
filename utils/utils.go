@@ -15,11 +15,8 @@ func StringInSlice(a string, list []string) bool {
 	return false
 }
 
-/*
-* Handles a yes/no answer
-* Returns true if yes, otherwise false
- */
-
+// Handles a yes/no answer
+// Returns true if yes, otherwise false
 func YesNoPrompt(question string) bool {
 	yesStrings := []string{"y", "Y", "yes"}
 	noStrings := []string{"n", "N", "no"}

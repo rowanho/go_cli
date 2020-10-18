@@ -13,10 +13,9 @@ var (
 	tab = 9
 )
 
-/*
-* Returns the caret notation of non-printable characters,
-apart from tab or newline
-*/
+
+// Returns the caret notation of non-printable characters,
+// apart from tab or newline
 func caretNotation(b byte) string {
 	i := int(b)
 	if i < 27 {
