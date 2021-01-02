@@ -1,5 +1,5 @@
-# go_cli
-Some linux command line program clones in go (made for fun)
+# gocli
+Some linux command line program clones in Go (made for fun)
 
 # mv
 
